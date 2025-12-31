@@ -1012,20 +1012,42 @@
       }
 
       function loadOrCreateAssignments(count) {
+        const today = todayKey();
+      
+        // Queremos 3 copas sí o sí
+        if (count !== 3) {
+          // fallback: si alguna vez cambias cantidad, usa el comportamiento viejo
+          const assigned = sampleWeightedNoReplace(prizes, count);
+          localStorage.setItem(ASSIGN_KEY, JSON.stringify({ date: today, assignments: assigned }));
+          return assigned;
+        }
+      
+        // Premio fijo en la copa derecha (índice 2)
+        const fixedPrize = prizes[2]; // <-- "1.500 FICHAS GRATIS"
+        const others = [prizes[0], prizes[1]];
+      
+        // Si querés que quede fijo POR DÍA (persistente), mantenemos el localStorage:
         try {
           const raw = localStorage.getItem(ASSIGN_KEY);
-          const today = todayKey();
           if (raw) {
             const parsed = JSON.parse(raw);
-            if (parsed && parsed.date === today && Array.isArray(parsed.assignments) && parsed.assignments.length === count) {
+            if (parsed && parsed.date === today && Array.isArray(parsed.assignments) && parsed.assignments.length === 3) {
+              // Aseguramos que el índice 2 siga siendo el fijo, por si había algo viejo guardado
+              parsed.assignments[2] = fixedPrize;
+              localStorage.setItem(ASSIGN_KEY, JSON.stringify(parsed));
               return parsed.assignments;
             }
           }
-        } catch(e){}
-        const assigned = sampleWeightedNoReplace(prizes, count);
-        localStorage.setItem(ASSIGN_KEY, JSON.stringify({ date: todayKey(), assignments: assigned }));
-        return assigned;
+        } catch (e) {}
+      
+        // Sorteamos solo para índice 0 y 1
+        const shuffled = sampleWeightedNoReplace(others, 2); // devuelve 2 elementos
+        const assignments = [shuffled[0], shuffled[1], fixedPrize];
+      
+        localStorage.setItem(ASSIGN_KEY, JSON.stringify({ date: today, assignments }));
+        return assignments;
       }
+
 
       function loadSelection() {
         try {
