@@ -1,0 +1,1893 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
+  <title>Elige una copa - Año Nuevo</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg-top: #04101d;
+      --bg-mid: #07162a;
+      --bg-bot: #071a2d;
+
+      --yellow: #ffd75a;
+      --gold-1: #f6d06a;
+      --gold-2: #ffb84d;
+      --gold-3: #b27a12;
+
+      --text: rgba(255,255,255,0.92);
+
+      --shadow: 0 22px 70px rgba(0,0,0,0.55);
+
+      --top-safe-pad: 14px;
+      --title-top-gap: 100px;
+    }
+
+    *{ box-sizing:border-box }
+    html,body{height:100%;margin:0;padding:0}
+    body{
+      background: linear-gradient(180deg,var(--bg-top) 0%,var(--bg-mid) 50%,var(--bg-bot) 100%);
+      color: var(--text);
+      font-family: "Lexend", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      text-align:center;
+      overflow:hidden;
+    }
+
+    .hidden{ display:none !important; }
+    .ui-hidden{ opacity:0 !important; transform: translateY(-6px) !important; pointer-events:none !important; }
+
+    /* PRELOADER */
+    #preloader{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      z-index: 9999;
+      background:
+        radial-gradient(900px 700px at 50% 15%, rgba(255,210,90,0.16), transparent 60%),
+        radial-gradient(600px 500px at 20% 20%, rgba(0,255,255,0.06), transparent 60%),
+        radial-gradient(600px 500px at 80% 25%, rgba(255,0,255,0.06), transparent 60%),
+        linear-gradient(180deg,var(--bg-top), var(--bg-mid), var(--bg-bot));
+      padding: 24px;
+    }
+
+    .pre-card{
+      width: min(520px, 92vw);
+      border-radius: 22px;
+      padding: 22px 18px 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.35));
+      border: 1px solid rgba(255, 210, 90, 0.22);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow:hidden;
+    }
+
+    .pre-card::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(600px 120px at 50% 0%, rgba(255,210,90,0.22), transparent 60%);
+      pointer-events:none;
+    }
+
+    .pre-logo{
+      display:flex; align-items:center; justify-content:center;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .pre-logo img{
+      height: 92px;
+      width:auto;
+      filter: drop-shadow(0 0 18px rgba(255, 210, 90, 0.22)) drop-shadow(0 14px 40px rgba(0,0,0,0.35));
+    }
+    .pre-fallback{
+      font-weight:900;
+      letter-spacing: 1px;
+      font-size: 34px;
+      background: linear-gradient(45deg, var(--gold-1), var(--gold-2));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 22px rgba(255,210,90,0.22);
+    }
+
+    .pre-title{
+      font-weight: 800;
+      color: rgba(255, 235, 140, 0.95);
+      letter-spacing: 0.4px;
+      margin: 2px 0 14px;
+      text-shadow: 0 0 18px rgba(255,210,90,0.18);
+      position: relative;
+      z-index: 1;
+    }
+
+    .pre-bar{
+      width: 100%;
+      height: 16px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255, 210, 90, 0.22);
+      border-radius: 999px;
+      overflow:hidden;
+      box-shadow: inset 0 10px 30px rgba(0,0,0,0.45);
+      position: relative;
+      z-index: 1;
+    }
+    .pre-fill{
+      width:0%;
+      height:100%;
+      background: linear-gradient(90deg, var(--gold-3), var(--gold-2), var(--gold-1));
+      background-size: 200% 100%;
+      animation: shimmer 2.2s infinite linear;
+      box-shadow: 0 0 24px rgba(255, 210, 90, 0.35);
+      transition: width .18s ease;
+    }
+    @keyframes shimmer{ 0%{ background-position: 200% 0; } 100%{ background-position: -200% 0; } }
+
+    .pre-pct{
+      margin-top: 10px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.88);
+      position: relative;
+      z-index: 1;
+    }
+
+    .pre-sub{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.62);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* APP / TOPBAR */
+    #app{
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      z-index: 1;
+    }
+
+    .topbar{
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      padding:
+        calc(env(safe-area-inset-top, 0px) + var(--top-safe-pad))
+        14px
+        10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.18), transparent);
+      backdrop-filter: blur(10px);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .topbar .brand{
+      pointer-events:auto;
+      display:flex; align-items:center; justify-content:center;
+      gap: 10px;
+    }
+
+    .topbar img{
+      height: 80px;
+      width:auto;
+      filter: drop-shadow(0 0 14px rgba(255,210,90,0.22)) drop-shadow(0 12px 40px rgba(0,0,0,0.35));
+    }
+
+    /* TITLE */
+    .page-header{
+      position:fixed;
+      top: calc(env(safe-area-inset-top, 0px) + var(--top-safe-pad) + var(--title-top-gap));
+      left:50%;
+      transform:translateX(-50%);
+      z-index:19;
+      pointer-events:none;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .title-chip{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 210, 90, 0.25);
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,210,90,0.14), transparent 60%),
+        rgba(0,0,0,0.28);
+      backdrop-filter: blur(10px);
+      box-shadow:
+        0 14px 44px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative;
+      overflow:hidden;
+    }
+    .title-chip::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(220px 70px at 15% 0%, rgba(255,210,90,0.18), transparent 60%),
+        radial-gradient(240px 70px at 85% 0%, rgba(255,255,255,0.10), transparent 60%);
+      pointer-events:none;
+    }
+    .title-chip .emoji{
+      font-size: 18px;
+      filter: drop-shadow(0 0 14px rgba(255,210,90,0.25));
+    }
+    .title-chip h1{
+      margin:0;
+      font-weight: 900;
+      font-size: clamp(16px, 2.2vw, 22px);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 0%, var(--gold-1) 45%, var(--gold-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.45);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* CANVAS SKY */
+    #sky{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+
+    /* LAYOUT */
+    main{
+      position:relative;
+      z-index:2;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      padding-top: 70px;
+    }
+
+    .stars{
+      display:flex;
+      gap:clamp(1.2rem, 4vw, 3rem);
+      pointer-events:auto;
+      align-items:flex-end;
+      justify-content:center;
+      padding-top: 70px;
+    }
+
+    .star{
+      background:transparent;border:0;padding:0;
+      width:clamp(140px, 24vw, 300px);
+      height:clamp(160px, 32vw, 380px);
+      display:flex;align-items:flex-end;justify-content:center;
+      position:relative;cursor:pointer;pointer-events:auto;
+      touch-action:manipulation;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      transition: filter .2s ease, transform .2s ease;
+    }
+    .star:hover{ filter: brightness(1.06); }
+    .star:active{ transform: translateY(2px) scale(0.99); }
+
+    .dropping .star{
+      transform:translateY(-120vh);
+      transition:transform .9s cubic-bezier(.22,.9,.3,1)
+    }
+    .final-1{transform:translateY(12px) scale(.95);transition-delay:.22s}
+    .final-2{transform:translateY(0) scale(1.18);transition-delay:.12s}
+    .final-3{transform:translateY(12px) scale(.95);transition-delay:.32s}
+
+    .star-inner{
+      width:100%;
+      height:100%;
+      transform-style:preserve-3d;
+      transition:transform .7s;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center
+    }
+    .star.flip .star-inner{transform:rotateY(180deg)}
+
+    /* SVG COPA */
+    .star-svg{
+      width:86%;
+      height:86%;
+      overflow:visible;
+      display:block;
+      max-width:520px;
+      filter: drop-shadow(0 18px 34px rgba(0,0,0,0.40));
+    }
+
+    .glow{
+      fill: rgba(255,215,90,0.18);
+      filter:url(#haloBlur);
+      pointer-events:none;
+    }
+    .glow2{
+      fill: rgba(255,255,255,0.08);
+      filter: blur(6px);
+      pointer-events:none;
+    }
+
+    .glass{
+      fill: url(#glassGrad);
+      stroke: rgba(255,255,255,0.22);
+      stroke-width: 1.2;
+    }
+    .rimStroke{
+      fill:none;
+      stroke: rgba(255,255,255,0.22);
+      stroke-width: 2.2;
+    }
+    .shine{
+      fill:none;
+      stroke: rgba(255,255,255,0.22);
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      filter: blur(0.2px);
+    }
+    .liquid{
+      fill: url(#liquidGrad);
+      opacity: 0.92;
+      stroke: rgba(255,220,140,0.22);
+      stroke-width: 0.8;
+    }
+    .bubble{
+      fill: rgba(255,255,255,0.60);
+      opacity: 0.55;
+    }
+
+    .ground-shadow{
+      position:absolute;left:50%;bottom:6%;
+      transform:translateX(-50%);
+      width:clamp(60px,16vw,160px);
+      height:clamp(8px,2.2vw,24px);
+      border-radius:50%;
+      background:radial-gradient(ellipse at center,rgba(0,0,0,0.36),rgba(0,0,0,0.12),transparent);
+      filter:blur(10px);
+      pointer-events:none
+    }
+
+    .star.pop .star-svg{animation:pop .5s cubic-bezier(.2,.9,.2,1)}
+    @keyframes pop{
+      0%{transform:translateZ(0) scale(1)}
+      40%{transform:translateZ(40px) scale(1.10)}
+      100%{transform:translateZ(24px) scale(1.04)}
+    }
+
+    .spark{
+      position:absolute;width:8px;height:8px;border-radius:50%;
+      background:radial-gradient(circle,#fff 0%,#ffd 40%,rgba(255,200,0,.06) 70%,transparent 100%);
+      filter:blur(1px);
+      opacity:0;
+      transform:scale(.6);
+      pointer-events:none;
+      animation:sparkPulse var(--dur,1.4s) var(--delay,0s) infinite
+    }
+    @keyframes sparkPulse{
+      0%{opacity:0;transform:scale(.5) translateY(0)}
+      20%{opacity:1;transform:scale(1.05) translateY(-6px)}
+      60%{opacity:.6;transform:scale(0.9) translateY(-2px)}
+      100%{opacity:0;transform:scale(.6) translateY(0)}
+    }
+
+    .star.disabled{ filter: grayscale(0.1) brightness(0.90); cursor:not-allowed }
+    .star.disabled:hover{ filter: grayscale(0.1) brightness(0.90); }
+
+    /* MODAL */
+    .modal{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      z-index: 50;
+      padding: 18px;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .25s ease;
+    }
+    .modal.show{ opacity: 1; pointer-events:auto; }
+
+    .modal-card{
+      width: min(520px, 92vw);
+      border-radius: 28px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,210,90,0.15), transparent 50%),
+        radial-gradient(ellipse at 20% 100%, rgba(255,180,77,0.08), transparent 40%),
+        radial-gradient(ellipse at 80% 100%, rgba(255,180,77,0.08), transparent 40%),
+        linear-gradient(180deg, rgba(20,30,50,0.95), rgba(10,15,30,0.98));
+      border: 2px solid rgba(255, 210, 90, 0.35);
+      box-shadow:
+        0 30px 100px rgba(0,0,0,0.7),
+        0 0 60px rgba(255,210,90,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      overflow:hidden;
+      position:relative;
+      transform: translateY(20px) scale(0.95);
+      transition: transform .35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal.show .modal-card{ transform: translateY(0) scale(1); }
+
+    .modal-fireworks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .firework-particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      animation: fireworkBurst 1.5s ease-out infinite;
+    }
+    @keyframes fireworkBurst {
+      0% { transform: scale(0); opacity: 1; }
+      50% { opacity: 1; }
+      100% { transform: scale(1) translateY(40px); opacity: 0; }
+    }
+
+    .modal-head{
+      padding: 28px 24px 16px;
+      position:relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .modal-emoji {
+      font-size: 56px;
+      margin-bottom: 12px;
+      display: block;
+      animation: emojiFloat 2s ease-in-out infinite;
+      filter: drop-shadow(0 4px 20px rgba(255,210,90,0.4));
+    }
+    @keyframes emojiFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.05); }
+    }
+
+    .modal-title{
+      margin:0;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #fff 0%, var(--gold-1) 50%, var(--gold-2) 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255,210,90,0.3);
+    }
+
+    .modal-sub{
+      margin: 12px 0 0;
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .modal-body{ padding: 16px 24px 28px; position:relative; z-index: 1; }
+
+    .prize-pill{
+      display:flex;
+      flex-direction: column;
+      align-items:center;
+      justify-content:center;
+      gap: 12px;
+      padding: 20px 24px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 210, 90, 0.25);
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,210,90,0.12), transparent 60%),
+        rgba(0,0,0,0.35);
+      box-shadow:
+        inset 0 2px 20px rgba(0,0,0,0.4),
+        0 4px 30px rgba(0,0,0,0.3);
+      margin: 16px 0 20px;
+    }
+
+    .prize-pill .tag{
+      font-size: 11px;
+      color: rgba(255,235,140,0.95);
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,210,90,0.2), rgba(255,180,77,0.15));
+      border: 1px solid rgba(255,210,90,0.3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .prize-pill .big{
+      font-weight: 900;
+      font-size: 22px;
+      text-align: center;
+      line-height: 1.4;
+      background: linear-gradient(135deg, #fff, var(--gold-1), var(--gold-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .modal-actions{
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      padding-top: 8px;
+    }
+
+    .btn{
+      border:0;
+      cursor:pointer;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      border-radius: 14px;
+      padding: 14px 28px;
+      min-width: 140px;
+      transition: all .2s ease;
+      font-size: 14px;
+    }
+    .btn:active{ transform: scale(0.97); }
+
+    .btn-primary{
+      color: #1a1400;
+      background: linear-gradient(135deg, var(--gold-1), var(--gold-2), var(--gold-1));
+      background-size: 200% 100%;
+      box-shadow:
+        0 8px 30px rgba(255, 210, 90, 0.35),
+        0 4px 15px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      animation: btnShimmer 3s ease-in-out infinite;
+    }
+    @keyframes btnShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .btn-primary:hover{
+      transform: translateY(-2px);
+      box-shadow:
+        0 12px 40px rgba(255, 210, 90, 0.45),
+        0 6px 20px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .btn-ghost{
+      color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .btn-ghost:hover{
+      background: rgba(255,255,255,0.12);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* TOAST 3D OVERLAY */
+    #toastOverlay{
+      position:fixed; inset:0;
+      z-index: 40;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+      background:
+        radial-gradient(800px 600px at 50% 50%, rgba(255,210,90,0.12), transparent 60%),
+        radial-gradient(600px 400px at 30% 70%, rgba(255,100,100,0.08), transparent 50%),
+        radial-gradient(600px 400px at 70% 70%, rgba(100,100,255,0.08), transparent 50%),
+        rgba(0,0,0,0.6);
+      opacity: 0;
+      transition: opacity .3s ease;
+      backdrop-filter: blur(8px);
+    }
+    #toastOverlay.show{ display:flex; opacity: 1; }
+
+    #toastCanvasWrap{
+      width: min(800px, 96vw);
+      height: min(500px, 60vh);
+      border-radius: 28px;
+      border: 2px solid rgba(255,210,90,0.25);
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(255,210,90,0.08), transparent 50%),
+        linear-gradient(180deg, rgba(20,30,50,0.9), rgba(10,15,30,0.95));
+      box-shadow:
+        0 30px 100px rgba(0,0,0,0.6),
+        0 0 80px rgba(255,210,90,0.1);
+      overflow:hidden;
+      position: relative;
+      isolation:isolate;
+    }
+
+    #fireworksCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    canvas.three-canvas{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index: 4;
+      pointer-events:none;
+    }
+
+    .toast-caption{
+      position:absolute;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.95);
+      text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      background:
+        linear-gradient(135deg, rgba(255,210,90,0.2), rgba(255,180,77,0.15));
+      border: 1px solid rgba(255,210,90,0.3);
+      border-radius: 999px;
+      padding: 12px 24px;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    #confetti{position:fixed;inset:0;z-index:60;pointer-events:none}
+
+    @media (max-width:820px){
+      :root{ --top-safe-pad: 16px; --title-top-gap: 72px; }
+      .topbar img{ height: 80px; }
+      .star{ width:clamp(110px, 30vw, 200px); height:clamp(150px, 40vw, 260px); }
+      .star-svg{ width:90%; height:90%; }
+      .ground-shadow{ width:clamp(48px, 20vw, 120px); height:clamp(6px,1.8vw,18px);}
+      .stars{ gap: clamp(0.8rem, 6vw, 1.6rem); }
+      .btn{ min-width: 120px; padding: 12px 20px; }
+      #toastCanvasWrap{ height: min(400px, 55vh); }
+      .modal-title { font-size: 24px; }
+      .modal-emoji { font-size: 48px; }
+      .prize-pill .big { font-size: 18px; }
+      .title-chip h1{ font-size: 16px; }
+    }
+
+    @media (max-width:420px){
+      :root{ --top-safe-pad: 18px; --title-top-gap: 100px; }
+      .ground-shadow{ display:none; }
+      .spark{ display:none; }
+      .title-chip{ padding: 10px 14px; }
+      .title-chip .emoji{ font-size: 16px; }
+      .title-chip h1{ font-size: 14px; letter-spacing: 1px; }
+      #toastCanvasWrap{ height: min(360px, 52vh); }
+      .toast-caption{ font-size: 14px; padding: 10px 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .spark, .pre-fill{ animation: none !important; }
+      .dropping .star{ transition: none !important; transform:none !important; }
+      .modal, .modal-card{ transition: none !important; }
+      #toastOverlay{ transition:none !important; }
+    }
+  </style>
+</head>
+
+<body class="dropping">
+
+  <!-- PRELOADER -->
+  <div id="preloader" role="status" aria-live="polite">
+    <div class="pre-card">
+      <div class="pre-logo" id="preLogoWrap">
+        <img id="brandLogoPre" src="assets/logo.png" alt="Logo"
+             onerror="this.remove(); document.getElementById('preLogoWrap').innerHTML='<div class=&quot;pre-fallback&quot;>ARKANA</div>';">
+
+      </div>
+      <div class="pre-title">Cargando juego…</div>
+      <div class="pre-bar" aria-label="Progreso de carga">
+        <div class="pre-fill" id="preFill"></div>
+      </div>
+      <div class="pre-pct" id="prePct">0%</div>
+      <div class="pre-sub">Preparando la experiencia ✨</div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="hidden">
+    <canvas id="sky"></canvas>
+
+    <!-- defs -->
+    <svg width="0" height="0" style="position:absolute;pointer-events:none" aria-hidden="true">
+      <defs>
+        <filter id="haloBlur" x="-200%" y="-200%" width="500%" height="500%" filterUnits="userSpaceOnUse">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="g"/>
+          <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+
+        <linearGradient id="glassGrad" x1="0" x2="1">
+          <stop offset="0%"   stop-color="rgba(255,255,255,0.18)"/>
+          <stop offset="35%"  stop-color="rgba(255,255,255,0.42)"/>
+          <stop offset="70%"  stop-color="rgba(255,255,255,0.22)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0.12)"/>
+        </linearGradient>
+
+        <linearGradient id="liquidGrad" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%"   stop-color="#ffe39a"/>
+          <stop offset="55%"  stop-color="#ffd75a"/>
+          <stop offset="100%" stop-color="#ffb000"/>
+        </linearGradient>
+
+        <!-- 1 SOLA COPA (símbolo reusable) -->
+        <symbol id="fluteSymbol" viewBox="0 0 120 160">
+          <!-- sombra suave interna -->
+          <ellipse cx="60" cy="148" rx="26" ry="7" fill="rgba(0,0,0,0.18)"/>
+
+          <!-- bowl (copa) -->
+          <path class="glass" d="
+            M 46 20
+            C 43 38, 46 62, 54 88
+            C 56 94, 58 95, 60 96
+            C 62 95, 64 94, 66 88
+            C 74 62, 77 38, 74 20
+            C 68 16, 52 16, 46 20 Z" />
+
+          <!-- liquid dentro -->
+          <path class="liquid" d="
+            M 50 30
+            C 48 44, 50 62, 56 84
+            C 57 88, 58 90, 60 90
+            C 62 90, 63 88, 64 84
+            C 70 62, 72 44, 70 30
+            C 66 28, 54 28, 50 30 Z" />
+
+          <!-- rim -->
+          <ellipse class="rimStroke" cx="60" cy="20" rx="14.8" ry="3.8"/>
+          <ellipse class="rimStroke" cx="60" cy="21.2" rx="12.2" ry="2.9" opacity="0.55"/>
+
+          <!-- stem -->
+          <rect class="glass" x="57.2" y="96" width="5.6" height="34" rx="2.8"/>
+          <ellipse cx="60" cy="96" rx="6.8" ry="2.4" fill="rgba(255,255,255,0.18)"/>
+
+          <!-- base -->
+          <ellipse class="glass" cx="60" cy="138" rx="14" ry="3.9"/>
+          <ellipse class="glass" cx="60" cy="148" rx="28" ry="7.4"/>
+
+          <!-- highlight -->
+          <path class="shine" d="M 52 26 C 49 40, 51 62, 56 82" />
+          <path class="shine" d="M 66 26 C 69 40, 67 62, 64 80" opacity="0.55"/>
+
+          <!-- bubbles -->
+          <circle class="bubble" cx="58" cy="66" r="1.6"/>
+          <circle class="bubble" cx="62" cy="58" r="1.2"/>
+          <circle class="bubble" cx="57" cy="52" r="1.0"/>
+          <circle class="bubble" cx="63" cy="74" r="1.0"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <!-- TOP LOGO -->
+    <div class="topbar" id="topbar" role="banner">
+      <div class="brand">
+        <img id="brandLogoTop" src="assets/logo.png" alt="Logo"
+             onerror="this.remove();">
+      </div>
+    </div>
+
+    <!-- TITLE -->
+    <header class="page-header" id="pageHeader">
+      <div class="title-chip">
+        <span class="emoji">🎆</span>
+        <h1>ELIGE UNA COPA</h1>
+        <span class="emoji">🥂</span>
+      </div>
+    </header>
+
+    <main>
+      <div class="stars" role="list" aria-label="Elige una copa">
+
+        <!-- IZQUIERDA -->
+        <button class="star final-1" data-index="0" aria-label="Copa izquierda" role="listitem">
+          <div class="star-inner" aria-hidden="true">
+            <svg viewBox="0 0 120 160" class="star-svg" xmlns="http://www.w3.org/2000/svg">
+              <ellipse class="glow2" cx="60" cy="74" rx="58" ry="36"></ellipse>
+              <ellipse class="glow"  cx="60" cy="78" rx="58" ry="36"></ellipse>
+
+              <g class="fluteWrap">
+                <use href="#fluteSymbol"></use>
+                <use xlink:href="#fluteSymbol"></use>
+              </g>
+            </svg>
+            <div class="ground-shadow" aria-hidden="true"></div>
+          </div>
+        </button>
+
+        <!-- CENTRO -->
+        <button class="star final-2" data-index="1" aria-label="Copa central" role="listitem">
+          <div class="star-inner" aria-hidden="true">
+            <svg viewBox="0 0 120 160" class="star-svg" xmlns="http://www.w3.org/2000/svg">
+              <ellipse class="glow2" cx="60" cy="74" rx="64" ry="40"></ellipse>
+              <ellipse class="glow"  cx="60" cy="78" rx="64" ry="40"></ellipse>
+
+              <g class="fluteWrap">
+                <use href="#fluteSymbol"></use>
+                <use xlink:href="#fluteSymbol"></use>
+              </g>
+            </svg>
+            <div class="ground-shadow" aria-hidden="true"></div>
+          </div>
+        </button>
+
+        <!-- DERECHA -->
+        <button class="star final-3" data-index="2" aria-label="Copa derecha" role="listitem">
+          <div class="star-inner" aria-hidden="true">
+            <svg viewBox="0 0 120 160" class="star-svg" xmlns="http://www.w3.org/2000/svg">
+              <ellipse class="glow2" cx="60" cy="74" rx="58" ry="36"></ellipse>
+              <ellipse class="glow"  cx="60" cy="78" rx="58" ry="36"></ellipse>
+
+              <g class="fluteWrap">
+                <use href="#fluteSymbol"></use>
+                <use xlink:href="#fluteSymbol"></use>
+              </g>
+            </svg>
+            <div class="ground-shadow" aria-hidden="true"></div>
+          </div>
+        </button>
+
+      </div>
+
+      <!-- TOAST 3D -->
+      <div id="toastOverlay" aria-hidden="true">
+        <div id="toastCanvasWrap">
+          <canvas id="fireworksCanvas"></canvas>
+          <div class="toast-caption">🥂 ¡Feliz Año Nuevo!</div>
+        </div>
+      </div>
+
+      <!-- MODAL -->
+      <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-card">
+          <div class="modal-fireworks" id="modalFireworks"></div>
+          <div class="modal-head">
+            <span class="modal-emoji">🎉</span>
+            <h2 class="modal-title" id="modal-title">¡Feliz Año Nuevo!</h2>
+            <p class="modal-sub" id="modal-sub">Guardá tu premio o sacá captura.</p>
+          </div>
+          <div class="modal-body">
+            <div class="prize-pill">
+              <span class="tag" id="modal-tag">TU PREMIO</span>
+              <span class="big" id="modal-prize">—</span>
+            </div>
+
+            <div class="modal-actions">
+              <button class="btn btn-ghost" id="modal-secondary">Cerrar</button>
+              <button class="btn btn-primary" id="modal-primary">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="confetti" aria-hidden="true"></div>
+    </main>
+
+    <audio id="claim-sound" preload="auto" aria-hidden="true">
+      <source src="assets/claim.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const BRAND_LOGO_SRC = "assets/logo.png";
+
+      const prizes = [
+        { label: "200% de bono + 2.000 fichas. RECORDA QUE SE ACTIVA CON UNA CARGA MÍNIMA DE 8.000. ", weight: 1 },
+        { label: "2.000 extras en tu próxima carga. RECORDA QUE SE ACTIVA CON UNA CARGA MÍNIMA DE 5.000.", weight: 1 },
+        { label: "1.500 FICHAS GRATIS", weight: 1 }
+      ];
+
+      const ASSIGN_KEY = 'starser.assignments';
+      const SELECT_KEY = 'starser.selection';
+
+      /* PRELOADER */
+      const preloader = document.getElementById('preloader');
+      const preFill = document.getElementById('preFill');
+      const prePct = document.getElementById('prePct');
+      const app = document.getElementById('app');
+
+      const preLogo = document.getElementById('brandLogoPre');
+      const topLogo = document.getElementById('brandLogoTop');
+      if (preLogo) preLogo.src = BRAND_LOGO_SRC;
+      if (topLogo) topLogo.src = BRAND_LOGO_SRC;
+
+      function loadImage(src){
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          img.src = src;
+        });
+      }
+
+      function loadFonts(){
+        try{
+          if (document.fonts && document.fonts.ready) return document.fonts.ready.then(()=>true).catch(()=>true);
+        }catch(e){}
+        return Promise.resolve(true);
+      }
+
+      function loadAudioMeta(el){
+        return new Promise((resolve)=>{
+          if (!el) return resolve(true);
+          let done = false;
+          const finish = () => { if(done) return; done = true; cleanup(); resolve(true); };
+          const cleanup = () => {
+            el.removeEventListener('loadedmetadata', finish);
+            el.removeEventListener('canplaythrough', finish);
+            el.removeEventListener('error', finish);
+          };
+          el.addEventListener('loadedmetadata', finish, { once:true });
+          el.addEventListener('canplaythrough', finish, { once:true });
+          el.addEventListener('error', finish, { once:true });
+          setTimeout(finish, 1200);
+        });
+      }
+
+      async function runPreloader(){
+        const audio = document.getElementById('claim-sound');
+
+        const tasks = [
+          loadImage(BRAND_LOGO_SRC),
+          loadFonts(),
+          loadAudioMeta(audio)
+        ];
+        const total = tasks.length;
+        let done = 0;
+        let target = 0;
+        let progress = 0;
+
+        const minTime = 900;
+        const t0 = performance.now();
+
+        function tick(){
+          progress += (target - progress) * 0.10;
+          const pct = Math.min(100, Math.max(0, Math.round(progress)));
+          preFill.style.width = pct + "%";
+          prePct.textContent = pct + "%";
+          if (pct >= 100) return;
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+
+        function updateTarget(){
+          target = Math.min(90, (done / total) * 90);
+        }
+        updateTarget();
+
+        for (const p of tasks){
+          await p;
+          done++;
+          updateTarget();
+        }
+
+        const elapsed = performance.now() - t0;
+        if (elapsed < minTime) await new Promise(r => setTimeout(r, minTime - elapsed));
+
+        target = 100;
+
+        await new Promise(r => {
+          const check = () => {
+            if (Math.round(progress) >= 99) return r();
+            requestAnimationFrame(check);
+          };
+          check();
+        });
+
+        preloader.classList.add('hidden');
+        app.classList.remove('hidden');
+      }
+
+      /* HELPERS */
+      function todayKey() { return new Date().toISOString().slice(0, 10); }
+
+      function sampleWeightedNoReplace(sourceArr, k) {
+        const pool = sourceArr.map(x => ({...x}));
+        const out = [];
+        for (let i = 0; i < k; i++){
+          const total = pool.reduce((s, x) => s + (x.weight || 1), 0);
+          let r = Math.random() * total;
+          for (let j = 0; j < pool.length; j++){
+            r -= (pool[j].weight || 1);
+            if (r <= 0){
+              out.push(pool.splice(j, 1)[0]);
+              break;
+            }
+          }
+          if (pool.length === 0 && out.length < k) break;
+        }
+        return out;
+      }
+
+      function loadOrCreateAssignments(count) {
+        try {
+          const raw = localStorage.getItem(ASSIGN_KEY);
+          const today = todayKey();
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.date === today && Array.isArray(parsed.assignments) && parsed.assignments.length === count) {
+              return parsed.assignments;
+            }
+          }
+        } catch(e){}
+        const assigned = sampleWeightedNoReplace(prizes, count);
+        localStorage.setItem(ASSIGN_KEY, JSON.stringify({ date: todayKey(), assignments: assigned }));
+        return assigned;
+      }
+
+      function loadSelection() {
+        try {
+          const raw = localStorage.getItem(SELECT_KEY);
+          const today = todayKey();
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.date === today) return parsed;
+          }
+        } catch(e){}
+        return null;
+      }
+
+      function saveSelection(index, prize) {
+        localStorage.setItem(SELECT_KEY, JSON.stringify({ date: todayKey(), index, prize }));
+      }
+
+      function disableAllStars() {
+        document.querySelectorAll('.star').forEach(btn=>{
+          btn.setAttribute('aria-disabled','true');
+          btn.classList.add('disabled');
+          btn.style.pointerEvents = 'none';
+        });
+      }
+
+      function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+      function setUIHidden(hidden){
+        const topbar = document.getElementById('topbar');
+        const header = document.getElementById('pageHeader');
+        if (!topbar || !header) return;
+        topbar.classList.toggle('ui-hidden', !!hidden);
+        header.classList.toggle('ui-hidden', !!hidden);
+      }
+
+      /* ✅ AJUSTE: 1 sola copa por opción (tilt leve izq/der, centro recto) */
+      function setupCups() {
+        const buttons = Array.from(document.querySelectorAll('.star'));
+        buttons.forEach((btn, i) => {
+          const svg = btn.querySelector('svg');
+          const wrap = btn.querySelector('.fluteWrap');
+          if (!svg || !wrap) return;
+
+          const isCenter = (i === 1);
+          const scale = isCenter ? 1.08 : 0.98;
+          const rot = isCenter ? 0 : (i === 0 ? -7 : 7);
+
+          const cx = 60, cy = 92; // centro visual de la copa
+          wrap.setAttribute(
+            'transform',
+            `translate(${cx} ${cy}) rotate(${rot}) scale(${scale}) translate(${-cx} ${-cy})`
+          );
+        });
+      }
+
+      /* SPARKLES */
+      function initSparksFor(starEl) {
+        if (!starEl) return;
+        const count = 3 + Math.floor(Math.random()*3);
+        for (let i=0;i<count;i++){
+          const sp = document.createElement('span');
+          sp.className = 'spark';
+          const lx = 24 + Math.random()*52;
+          const ty = 14 + Math.random()*46;
+          const size = 3 + Math.random()*8;
+          const dur = (0.9 + Math.random()*1.6).toFixed(2) + 's';
+          const delay = (Math.random()*1.8).toFixed(2) + 's';
+          sp.style.left = lx + '%';
+          sp.style.top = ty + '%';
+          sp.style.width = size + 'px';
+          sp.style.height = size + 'px';
+          sp.style.setProperty('--dur', dur);
+          sp.style.setProperty('--delay', delay);
+          starEl.appendChild(sp);
+        }
+      }
+
+      /* CONFETTI */
+      function explodeConfetti() {
+        const confettiContainer = document.getElementById('confetti');
+        if (!confettiContainer) return;
+        confettiContainer.innerHTML = '';
+        const emojis = ["✨","🎉","⭐️","💫","🎊","🥂","🍾","🎆"];
+        const count = 35;
+        for (let i = 0; i < count; i++) {
+          const el = document.createElement('div');
+          el.style.position = 'absolute';
+          el.style.left = (40 + Math.random()*20) + '%';
+          el.style.top = (35 + Math.random()*10) + '%';
+          el.style.fontSize = (14 + Math.random()*28) + 'px';
+          el.style.opacity = (0.7 + Math.random()*0.3);
+          el.style.transform = `translateY(0) rotate(${Math.random()*360}deg)`;
+          el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+          confettiContainer.appendChild(el);
+
+          const duration = 1200 + Math.random()*1600;
+          el.animate([
+            { transform: `translateY(0) rotate(${Math.random()*360}deg)`, opacity: 1 },
+            { transform: `translateY(${80 + Math.random()*120}vh) rotate(${Math.random()*900 - 450}deg)`, opacity: 0.15 }
+          ], { duration, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+
+          setTimeout(() => { try { el.remove(); } catch(e){} }, duration+250);
+        }
+      }
+
+      /* MODAL FIREWORKS */
+      function createModalFireworks() {
+        const container = document.getElementById('modalFireworks');
+        if (!container) return;
+        container.innerHTML = '';
+
+        const colors = ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#ff9ff3'];
+
+        for (let i = 0; i < 20; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'firework-particle';
+          particle.style.left = (20 + Math.random() * 60) + '%';
+          particle.style.top = (20 + Math.random() * 40) + '%';
+          particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          particle.style.animationDelay = (Math.random() * 2) + 's';
+          particle.style.animationDuration = (1 + Math.random()) + 's';
+          container.appendChild(particle);
+        }
+      }
+
+      /* MODAL */
+      const modal = document.getElementById('modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalSub = document.getElementById('modal-sub');
+      const modalPrize = document.getElementById('modal-prize');
+      const modalTag = document.getElementById('modal-tag');
+      const modalPrimary = document.getElementById('modal-primary');
+      const modalSecondary = document.getElementById('modal-secondary');
+
+      function showModal({ title, sub, tag, prizeLabel }) {
+        modalTitle.textContent = title || "¡Feliz Año Nuevo!";
+        modalSub.textContent = sub || "Guardá tu premio o sacá captura.";
+        modalTag.textContent = tag || "TU PREMIO";
+        modalPrize.textContent = prizeLabel || "—";
+        createModalFireworks();
+        modal.classList.add('show');
+      }
+
+      function hideModal(){ modal.classList.remove('show'); }
+
+      modalPrimary.addEventListener('click', hideModal);
+      modalSecondary.addEventListener('click', hideModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+
+      /* AUDIO */
+      const claimAudio = document.getElementById('claim-sound');
+      function playClaimSound(){
+        if (!claimAudio) return;
+        try{
+          claimAudio.currentTime = 0;
+          claimAudio.volume = 0.9;
+          const p = claimAudio.play();
+          if (p && p.catch) p.catch(()=>{});
+        }catch(e){}
+      }
+
+      /* FIREWORKS CANVAS FOR TOAST (behind 3D) */
+      class Firework {
+        constructor(ctx, x, y, color) {
+          this.ctx = ctx;
+          this.x = x;
+          this.y = y;
+          this.color = color;
+          this.particles = [];
+          this.exploded = false;
+          this.targetY = y * 0.3 + Math.random() * y * 0.3;
+          this.velocity = { x: 0, y: -8 - Math.random() * 4 };
+
+          for (let i = 0; i < 50; i++) {
+            const angle = (Math.PI * 2 / 50) * i;
+            const speed = 2 + Math.random() * 3;
+            this.particles.push({
+              x: 0, y: 0,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              alpha: 1,
+              size: 2 + Math.random() * 2
+            });
+          }
+        }
+
+        update() {
+          if (!this.exploded) {
+            this.y += this.velocity.y;
+            this.velocity.y += 0.15;
+            if (this.y <= this.targetY) {
+              this.exploded = true;
+              this.particles.forEach(p => { p.x = this.x; p.y = this.y; });
+            }
+          } else {
+            this.particles.forEach(p => {
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vy += 0.05;
+              p.alpha -= 0.015;
+            });
+          }
+        }
+
+        draw() {
+          if (!this.exploded) {
+            this.ctx.beginPath();
+            this.ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+            this.ctx.fillStyle = this.color;
+            this.ctx.fill();
+          } else {
+            this.particles.forEach(p => {
+              if (p.alpha > 0) {
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                this.ctx.fillStyle = this.color.replace(')', `, ${p.alpha})`).replace('rgb', 'rgba');
+                this.ctx.fill();
+              }
+            });
+          }
+        }
+
+        isDead() {
+          return this.exploded && this.particles.every(p => p.alpha <= 0);
+        }
+      }
+
+      function runFireworks(canvas, duration) {
+        const ctx = canvas.getContext('2d');
+        const DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+        function resizeFW(){
+          const w = canvas.parentElement.clientWidth;
+          const h = canvas.parentElement.clientHeight;
+          canvas.width = Math.floor(w * DPR);
+          canvas.height = Math.floor(h * DPR);
+          canvas.style.width = w + "px";
+          canvas.style.height = h + "px";
+          ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+          return { w, h };
+        }
+
+        let { w, h } = resizeFW();
+
+        const colors = [
+          'rgb(255, 215, 0)', 'rgb(255, 107, 107)', 'rgb(78, 205, 196)',
+          'rgb(69, 183, 209)', 'rgb(249, 202, 36)', 'rgb(255, 159, 243)'
+        ];
+
+        const fireworks = [];
+        const startTime = performance.now();
+
+        function addFirework() {
+          const x = w * 0.2 + Math.random() * w * 0.6;
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          fireworks.push(new Firework(ctx, x, h, color));
+        }
+
+        let lastFirework = 0;
+
+        function animate(now) {
+          const elapsed = now - startTime;
+          if (elapsed > duration) return;
+
+          const nw = canvas.parentElement.clientWidth;
+          const nh = canvas.parentElement.clientHeight;
+          if (nw !== w || nh !== h){
+            ({ w, h } = resizeFW());
+          }
+
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.18)';
+          ctx.fillRect(0, 0, w, h);
+
+          if (now - lastFirework > 300 + Math.random() * 400) {
+            addFirework();
+            lastFirework = now;
+          }
+
+          for (let i = fireworks.length - 1; i >= 0; i--) {
+            fireworks[i].update();
+            fireworks[i].draw();
+            if (fireworks[i].isDead()) fireworks.splice(i, 1);
+          }
+
+          requestAnimationFrame(animate);
+        }
+
+        addFirework();
+        requestAnimationFrame(animate);
+      }
+
+      /* THREE.JS TOAST ANIMATION (queda igual) */
+      const toastOverlay = document.getElementById('toastOverlay');
+      const toastWrap = document.getElementById('toastCanvasWrap');
+
+      function easeOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+      function easeInOutCubic(t){ return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2; }
+
+      function makeEnvTexture(){
+        const c = document.createElement('canvas');
+        c.width = 512; c.height = 256;
+        const g = c.getContext('2d');
+
+        const grad = g.createLinearGradient(0, 0, c.width, 0);
+        grad.addColorStop(0,   '#071a2d');
+        grad.addColorStop(0.35,'#0b2b44');
+        grad.addColorStop(0.65,'#3b2a08');
+        grad.addColorStop(1,   '#ffcf6a');
+        g.fillStyle = grad;
+        g.fillRect(0,0,c.width,c.height);
+
+        function glow(x,y,r,rgba){
+          const rg = g.createRadialGradient(x,y,0,x,y,r);
+          rg.addColorStop(0, rgba);
+          rg.addColorStop(1, 'rgba(0,0,0,0)');
+          g.fillStyle = rg;
+          g.fillRect(x-r,y-r,r*2,r*2);
+        }
+        glow(130, 80, 130, 'rgba(255,220,120,0.85)');
+        glow(380, 60, 110, 'rgba(255,255,255,0.55)');
+        glow(420, 160, 160,'rgba(255,190,80,0.65)');
+        glow(90,  170, 150,'rgba(120,200,255,0.35)');
+
+        for(let i=0;i<120;i++){
+          const x = Math.random()*c.width;
+          const y = Math.random()*c.height;
+          const a = 0.15 + Math.random()*0.35;
+          g.fillStyle = `rgba(255,255,255,${a})`;
+          g.fillRect(x,y,1,1);
+        }
+
+        const tex = new THREE.CanvasTexture(c);
+        tex.mapping = THREE.EquirectangularReflectionMapping;
+        tex.encoding = THREE.sRGBEncoding;
+        tex.needsUpdate = true;
+        return tex;
+      }
+
+      function createChampagneGlass(glassMat, goldMat, stemMat){
+        const g = new THREE.Group();
+
+        const baseGeo = new THREE.CylinderGeometry(0.55, 0.65, 0.08, 32);
+        const base = new THREE.Mesh(baseGeo, stemMat);
+        base.position.y = 0.04;
+        base.renderOrder = 0;
+        g.add(base);
+
+        const baseRingGeo = new THREE.TorusGeometry(0.58, 0.03, 8, 32);
+        const baseRing = new THREE.Mesh(baseRingGeo, stemMat);
+        baseRing.rotation.x = Math.PI / 2;
+        baseRing.position.y = 0.08;
+        baseRing.renderOrder = 0;
+        g.add(baseRing);
+
+        const stemGeo = new THREE.CylinderGeometry(0.06, 0.08, 1.4, 16);
+        const stem = new THREE.Mesh(stemGeo, stemMat);
+        stem.position.y = 0.78;
+        stem.renderOrder = 0;
+        g.add(stem);
+
+        const knotGeo = new THREE.SphereGeometry(0.1, 16, 16);
+        const knot = new THREE.Mesh(knotGeo, stemMat);
+        knot.position.y = 0.5;
+        knot.scale.y = 0.6;
+        knot.renderOrder = 0;
+        g.add(knot);
+
+        const bowlPts = [
+          new THREE.Vector2(0.00, 0.00),
+          new THREE.Vector2(0.35, 0.02),
+          new THREE.Vector2(0.52, 0.20),
+          new THREE.Vector2(0.58, 0.50),
+          new THREE.Vector2(0.55, 0.90),
+          new THREE.Vector2(0.48, 1.30),
+          new THREE.Vector2(0.38, 1.70),
+          new THREE.Vector2(0.32, 2.00),
+          new THREE.Vector2(0.30, 2.20),
+          new THREE.Vector2(0.00, 2.25)
+        ];
+        const bowlGeo = new THREE.LatheGeometry(bowlPts, 64);
+        bowlGeo.computeVertexNormals();
+
+        const bowl = new THREE.Mesh(bowlGeo, glassMat);
+        bowl.position.y = 1.45;
+        bowl.renderOrder = 3;
+        g.add(bowl);
+
+        const rimMat = new THREE.MeshBasicMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.06,
+          side: THREE.DoubleSide,
+          depthWrite: false
+        });
+        const rim = new THREE.Mesh(bowlGeo.clone(), rimMat);
+        rim.position.copy(bowl.position);
+        rim.scale.set(1.004,1.004,1.004);
+        rim.renderOrder = 4;
+        g.add(rim);
+
+        const liquidPts = [
+          new THREE.Vector2(0.00, 0.00),
+          new THREE.Vector2(0.32, 0.02),
+          new THREE.Vector2(0.46, 0.15),
+          new THREE.Vector2(0.52, 0.42),
+          new THREE.Vector2(0.50, 0.78),
+          new THREE.Vector2(0.44, 1.10),
+          new THREE.Vector2(0.36, 1.38),
+          new THREE.Vector2(0.30, 1.55),
+          new THREE.Vector2(0.00, 1.58),
+        ];
+        const liquidGeo = new THREE.LatheGeometry(liquidPts, 56);
+        liquidGeo.computeVertexNormals();
+
+        const liquid = new THREE.Mesh(liquidGeo, goldMat);
+        liquid.position.y = 1.48;
+        liquid.renderOrder = 2;
+        g.add(liquid);
+
+        const bubbleGroup = new THREE.Group();
+        const bubbleMatBase = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.55,
+          roughness: 0.1,
+          metalness: 0.6,
+          depthWrite: false
+        });
+
+        for (let i = 0; i < 18; i++) {
+          const bubbleGeo = new THREE.SphereGeometry(0.02 + Math.random() * 0.03, 10, 10);
+          const bubble = new THREE.Mesh(bubbleGeo, bubbleMatBase.clone());
+          bubble.position.set(
+            (Math.random() - 0.5) * 0.55,
+            1.65 + Math.random() * 1.2,
+            (Math.random() - 0.5) * 0.55
+          );
+          bubble.userData.speed = 0.3 + Math.random() * 0.55;
+          bubble.userData.startY = bubble.position.y;
+          bubble.renderOrder = 5;
+          bubbleGroup.add(bubble);
+        }
+        bubbleGroup.renderOrder = 5;
+        g.add(bubbleGroup);
+        g.userData.bubbles = bubbleGroup;
+
+        g.userData.bowl = bowl;
+        g.userData.liquid = liquid;
+
+        return g;
+      }
+
+      async function playToast3D(){
+        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduced) return;
+        if (!window.THREE) return;
+
+        setUIHidden(true);
+        toastOverlay.classList.add('show');
+
+        const fireworksCanvas = document.getElementById('fireworksCanvas');
+        runFireworks(fireworksCanvas, 2600);
+
+        const old = toastWrap.querySelector('canvas.three-canvas');
+        if (old) old.remove();
+
+        const w = toastWrap.clientWidth;
+        const h = toastWrap.clientHeight;
+
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true,
+          alpha: true,
+          premultipliedAlpha: false
+        });
+        renderer.setSize(w, h, false);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setClearColor(0x000000, 0);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.05;
+        renderer.physicallyCorrectLights = true;
+
+        renderer.domElement.className = 'three-canvas';
+
+        const captionEl = toastWrap.querySelector('.toast-caption');
+        toastWrap.insertBefore(renderer.domElement, captionEl);
+
+        const scene = new THREE.Scene();
+
+        const envTex = makeEnvTexture();
+        scene.environment = envTex;
+        scene.background = null;
+
+        const camera = new THREE.PerspectiveCamera(42, w/h, 0.1, 100);
+        camera.position.set(0, 2.65, 6.4);
+        camera.lookAt(0, 2.1, 0);
+
+        const amb = new THREE.AmbientLight(0xffffff, 0.65);
+        scene.add(amb);
+
+        const key = new THREE.DirectionalLight(0xfff0dd, 1.35);
+        key.position.set(3.2, 8.5, 5.8);
+        scene.add(key);
+
+        const rimL = new THREE.DirectionalLight(0xaad9ff, 0.85);
+        rimL.position.set(-4.2, 4.6, -3.3);
+        scene.add(rimL);
+
+        const warm = new THREE.PointLight(0xffd37a, 0.65, 12);
+        warm.position.set(0, 3.2, 2.2);
+        scene.add(warm);
+
+        let glassMat;
+        try{
+          glassMat = new THREE.MeshPhysicalMaterial({
+            color: 0xffffff,
+            roughness: 0.08,
+            metalness: 0.0,
+            transparent: true,
+            opacity: 0.58,
+            transmission: 0.55,
+            thickness: 0.25,
+            ior: 1.45,
+            clearcoat: 0.35,
+            clearcoatRoughness: 0.12,
+            envMapIntensity: 1.35,
+            side: THREE.DoubleSide,
+            depthWrite: false
+          });
+        }catch(e){
+          glassMat = new THREE.MeshStandardMaterial({
+            color: 0xffffff,
+            transparent:true,
+            opacity: 0.55,
+            roughness: 0.1,
+            metalness: 0.0,
+            side: THREE.DoubleSide,
+            depthWrite: false
+          });
+        }
+
+        const goldMat = new THREE.MeshStandardMaterial({
+          color: 0xffd54f,
+          transparent: true,
+          opacity: 0.92,
+          roughness: 0.22,
+          metalness: 0.08,
+          emissive: 0xffc400,
+          emissiveIntensity: 0.28,
+          side: THREE.DoubleSide,
+          depthWrite: false
+        });
+
+        const stemMat = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.88,
+          roughness: 0.12,
+          metalness: 0.95,
+          envMapIntensity: 1.2
+        });
+
+        const leftGlass = createChampagneGlass(glassMat, goldMat, stemMat);
+        const rightGlass = createChampagneGlass(glassMat, goldMat, stemMat);
+
+        leftGlass.scale.set(1.08, 1.08, 1.08);
+        rightGlass.scale.set(1.08, 1.08, 1.08);
+
+        const BASE_Y = -0.05;
+        const BASE_X_OPEN = 2.85;
+        const BASE_X_IMPACT = 2.30;
+        const ROT_START = 0.08;
+        const ROT_IMPACT = 0.70;
+        const LIFT = 0.22;
+
+        leftGlass.position.set(-BASE_X_OPEN, BASE_Y, 0);
+        rightGlass.position.set( BASE_X_OPEN, BASE_Y, 0);
+
+        leftGlass.rotation.z = -ROT_START;
+        rightGlass.rotation.z = ROT_START;
+
+        scene.add(leftGlass, rightGlass);
+
+        const particleCount = 160;
+        const geom = new THREE.BufferGeometry();
+        const pos = new Float32Array(particleCount * 3);
+        for (let i=0;i<particleCount;i++){
+          pos[i*3+0] = (Math.random()*2 - 1) * 1.6;
+          pos[i*3+1] = 3.05 + Math.random()*1.2;
+          pos[i*3+2] = (Math.random()*2 - 1) * 0.9;
+        }
+        geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
+        const pointsMat = new THREE.PointsMaterial({
+          color: 0xfff1c7,
+          size: 0.085,
+          transparent: true,
+          opacity: 0.0,
+          depthWrite: false
+        });
+        const points = new THREE.Points(geom, pointsMat);
+        points.renderOrder = 6;
+        scene.add(points);
+
+        const start = performance.now();
+        const dur = 2400;
+        let resized = false;
+
+        function onResize(){ resized = true; }
+        window.addEventListener('resize', onResize);
+
+        await new Promise((resolve) => {
+          function frame(now){
+            const t = Math.min(1, (now - start) / dur);
+
+            if (resized){
+              resized = false;
+              const nw = toastWrap.clientWidth;
+              const nh = toastWrap.clientHeight;
+              camera.aspect = nw/nh;
+              camera.updateProjectionMatrix();
+              renderer.setSize(nw, nh, false);
+              renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            }
+
+            [leftGlass, rightGlass].forEach(glass => {
+              const bg = glass.userData.bubbles;
+              if (bg) {
+                bg.children.forEach(bubble => {
+                  bubble.position.y += bubble.userData.speed * 0.02;
+                  if (bubble.position.y > bubble.userData.startY + 1.55) {
+                    bubble.position.y = bubble.userData.startY;
+                  }
+                });
+              }
+            });
+
+            const aEnd = 0.50;
+            const a = Math.min(1, t / aEnd);
+            const ea = easeInOutCubic(a);
+
+            let baseX = BASE_X_OPEN + (BASE_X_IMPACT - BASE_X_OPEN) * ea;
+            let rot = ROT_START + (ROT_IMPACT - ROT_START) * ea;
+            let y = BASE_Y + (LIFT * ea);
+
+            let impactX = 0, impactY = 0, impactRot = 0;
+            if (t > aEnd){
+              const b = Math.min(1, (t - aEnd) / 0.22);
+              const eb = easeOutCubic(b);
+
+              const s = Math.sin(eb * Math.PI);
+              impactX = s * 0.11;
+              impactY = s * 0.14;
+              impactRot = s * 0.06;
+
+              pointsMat.opacity = Math.min(0.95, eb * 0.95);
+              points.rotation.y += 0.03;
+            } else {
+              pointsMat.opacity = 0.0;
+            }
+
+            if (t > 0.72){
+              const c = Math.min(1, (t - 0.72) / 0.28);
+              const ec = easeOutCubic(c);
+
+              const holdX = BASE_X_IMPACT + 0.10;
+              const holdRot = ROT_IMPACT - 0.10;
+              const holdY = BASE_Y + (LIFT * 0.78);
+
+              baseX = baseX + (holdX - baseX) * ec;
+              rot = rot + (holdRot - rot) * ec;
+              y = y + (holdY - y) * ec;
+
+              pointsMat.opacity = (1-ec) * 0.75;
+            }
+
+            leftGlass.position.x = -baseX + impactX;
+            rightGlass.position.x = baseX - impactX;
+
+            leftGlass.position.y = y + impactY;
+            rightGlass.position.y = y + impactY;
+
+            leftGlass.rotation.z = -(rot + impactRot);
+            rightGlass.rotation.z = (rot + impactRot);
+
+            leftGlass.position.y += Math.sin(now * 0.003) * 0.008;
+            rightGlass.position.y += Math.sin(now * 0.003 + 1.1) * 0.008;
+
+            renderer.render(scene, camera);
+
+            if (t < 1) requestAnimationFrame(frame);
+            else resolve();
+          }
+          requestAnimationFrame(frame);
+        });
+
+        toastOverlay.style.opacity = "0";
+        await wait(260);
+
+        window.removeEventListener('resize', onResize);
+        toastOverlay.classList.remove('show');
+        toastOverlay.style.opacity = "";
+
+        setUIHidden(false);
+
+        try{
+          renderer.dispose();
+          geom.dispose();
+          pointsMat.dispose();
+          glassMat.dispose && glassMat.dispose();
+          goldMat.dispose && goldMat.dispose();
+          stemMat.dispose && stemMat.dispose();
+          envTex.dispose && envTex.dispose();
+          renderer.domElement.remove();
+        }catch(e){}
+      }
+
+      /* SKY CANVAS */
+      const canvas = document.getElementById('sky');
+      const ctx = canvas && canvas.getContext ? canvas.getContext('2d') : null;
+      let skyStars = [], W=0, H=0;
+      const DPR = Math.max(1, window.devicePixelRatio || 1);
+
+      function resizeSky() {
+        if (!canvas || !ctx) return;
+        W = canvas.width = Math.floor(window.innerWidth * DPR);
+        H = canvas.height = Math.floor(window.innerHeight * DPR);
+        canvas.style.width = window.innerWidth + 'px';
+        canvas.style.height = window.innerHeight + 'px';
+        initSkyStars();
+      }
+      window.addEventListener('resize', resizeSky);
+
+      function initSkyStars() {
+        skyStars = [];
+        const area = window.innerWidth * window.innerHeight;
+        const count = Math.max(60, Math.floor(area / 16000));
+        for (let i=0;i<count;i++){
+          const x = Math.random() * W;
+          const y = Math.random() * H * 0.95;
+          const r = (Math.random() * 1.6 + 0.4) * DPR;
+          const baseA = Math.random() * 0.6 + 0.3;
+          const speed = Math.random() * 0.6 + 0.2;
+          const amp = Math.random() * 0.22 + 0.06;
+          const phase = Math.random() * Math.PI * 2;
+          const hasSpark = Math.random() < 0.12;
+          skyStars.push({x,y,r,baseA,speed,amp,phase,hasSpark,sparkTimer:0});
+        }
+      }
+
+      let last = performance.now();
+      function drawSky(now) {
+        if (!ctx) return;
+        const dt = (now - last) / 1000;
+        last = now;
+
+        const g = ctx.createLinearGradient(0,0,0,H);
+        g.addColorStop(0, '#04101d'); g.addColorStop(0.5, '#07162a'); g.addColorStop(1, '#071a2d');
+        ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+        const vign = ctx.createRadialGradient(W/2, H*0.36, Math.min(W,H)*0.18, W/2, H/2, Math.max(W,H));
+        vign.addColorStop(0,'rgba(20,30,50,0.02)'); vign.addColorStop(1,'rgba(0,0,0,0.28)');
+        ctx.fillStyle = vign; ctx.fillRect(0,0,W,H);
+
+        ctx.globalCompositeOperation = 'screen';
+        for (let i=0;i<skyStars.length;i++){
+          const s = skyStars[i];
+          s.phase += dt * s.speed;
+          let tw = s.baseA * (1 + Math.sin(s.phase) * s.amp);
+          if (s.hasSpark && Math.random() < 0.006) { s.sparkTimer = 0.12 + Math.random() * 0.34; }
+          if (s.sparkTimer > 0) { tw += 0.6 * Math.exp(-5 * (0.4 - s.sparkTimer)); s.sparkTimer -= dt; }
+
+          const rad = s.r * (1 + Math.sin(s.phase) * 0.12);
+          const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, rad*4.5);
+          grad.addColorStop(0, `rgba(255,255,255,${Math.min(1, 0.95 * tw)})`);
+          grad.addColorStop(0.2, `rgba(255,245,200,${0.45 * tw})`);
+          grad.addColorStop(0.6, `rgba(200,200,255,${0.06 * tw})`);
+          grad.addColorStop(1, `rgba(0,0,0,0)`);
+
+          ctx.fillStyle = grad;
+          ctx.fillRect(s.x - rad*4.5, s.y - rad*4.5, rad*9, rad*9);
+          ctx.fillStyle = `rgba(255,255,255,${0.35 * tw})`;
+          ctx.fillRect(Math.round(s.x), Math.round(s.y), Math.max(1, DPR), Math.max(1, DPR));
+        }
+        ctx.globalCompositeOperation = 'source-over';
+        requestAnimationFrame(drawSky);
+      }
+
+      /* GAME INIT */
+      let locked = true;
+
+      async function initGame(){
+        setupCups();
+
+        const starButtons = Array.from(document.querySelectorAll('.star'));
+        starButtons.forEach(btn => initSparksFor(btn));
+
+        const assignments = loadOrCreateAssignments(starButtons.length);
+        starButtons.forEach((btn, idx) => {
+          const prize = assignments[idx] || { label: 'Sin premio' };
+          btn.dataset.assignedPrize = JSON.stringify(prize);
+        });
+
+        const existing = loadSelection();
+        if (existing) {
+          locked = true;
+          disableAllStars();
+          showModal({
+            title: "Ya reclamaste hoy ✨",
+            sub: "Si recargaste la página, acá lo tenés de nuevo para sacar captura.",
+            tag: "TU PREMIO",
+            prizeLabel: (existing.prize && existing.prize.label) ? existing.prize.label : "Premio reclamado"
+          });
+        }
+
+        starButtons.forEach((btn, idx) => {
+          btn.addEventListener('click', async () => {
+            if (locked) return;
+
+            locked = true;
+            starButtons.forEach(s => s.classList.remove('selected','pop','flip'));
+            btn.classList.add('selected');
+            void btn.offsetWidth;
+            btn.classList.add('pop','flip');
+
+            playClaimSound();
+
+            let prize;
+            try { prize = JSON.parse(btn.dataset.assignedPrize); } catch(e) { prize = prizes[0]; }
+
+            saveSelection(idx, prize);
+            disableAllStars();
+
+            await wait(700);
+            await playToast3D();
+
+            showModal({
+              title: "¡Feliz Año Nuevo! 🥂",
+              sub: "Disfrutá tu premio. Guardalo o sacá captura para no olvidarte.",
+              tag: "TU PREMIO",
+              prizeLabel: prize.label
+            });
+            explodeConfetti();
+          });
+        });
+
+        setTimeout(() => {
+          document.body.classList.remove('dropping');
+          if (!loadSelection()) setTimeout(() => { locked = false; }, 650);
+        }, 60);
+
+        resizeSky();
+        requestAnimationFrame(drawSky);
+      }
+
+      /* BOOT */
+      (async function boot(){
+        await runPreloader();
+        initGame();
+      })();
+
+    })();
+  </script>
+</body>
+</html>
